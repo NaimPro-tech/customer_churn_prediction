@@ -1,143 +1,41 @@
-🔹 1) Data Collection / Data Source Tools
+Project Name: Customer Churn Prediction
 
-এগুলো দিয়ে raw data আসে — logs, billing, usage, activities:
+Sample Dataset: Amazon Sales Dataset
+Leverage dataset from: Mehak Iftikhar-Kaggle Account
 
-MySQL / PostgreSQL → Structured data
+Project Overview:
 
-MongoDB → Semi-structured data
+This is a customer data of Amazon which is a basically e-commerce site. We will use this to create a churn prediction model, and train it for future unseen data. 
+At First we will work with basic algorithm which is logistic regression, then we will use tree based model to check which will work best for this type of e-commerce data.
 
-Firebase / Supabase → App usage logs
+Dataset Overview:
 
-AWS S3 / Google Cloud Storage → Event logs, CSV dumps
+This dataset is having the data of 1K+ Amazon Product's Ratings and Reviews as per their details listed on the official website of Amazon
 
-Apache Kafka → Real-time log streams
+Features:
 
-Server log files (JSON/CSV)
+product_id - Product ID
+product_name - Name of the Product
+category - Category of the Product
+discounted_price - Discounted Price of the Product
+actual_price - Actual Price of the Product
+discount_percentage - Percentage of Discount for the Product
+rating - Rating of the Product
+rating_count - Number of people who voted for the Amazon rating
+about_product - Description about the Product
+user_id - ID of the user who wrote review for the Product
+user_name - Name of the user who wrote review for the Product
+review_id - ID of the user review
+review_title - Short review
+review_content - Long review
+img_link - Image Link of the Product
+product_link - Official Website Link of the Product
 
+Metadata
 
-🔹 2) Data Cleaning & Preprocessing Tools
+Source: This dataset is scraped from the official website of Amazon\
 
-এগুলো ML pipeline-এর backbone:
+Collection Methodology: This dataset is scraped through BeautifulSoup and WebDriver using Python
 
-Python
+License: CC BY-NC-SA 4.0
 
-Pandas → data cleaning
-
-NumPy → numeric operations
-
-Scikit-learn → scaling, encoding, train/test split
-
-Matplotlib / Seaborn → visualization
-
-Jupyter Notebook / VS Code → development environment
-
-🔹 3) Feature Engineering Tools
-
-Pandas → feature creation
-
-Scikit-learn → feature transformation
-
-DateTime libraries → session duration, time-based features
-
-Log parsing tools
-
-SQL → aggregations (session count, avg usage, payment pattern)
-
-🔹 4) Machine Learning Tools (Model Training)
-
-Industry-grade ML algorithms & frameworks:
-
-Scikit-learn → Logistic Regression, Random Forest, SVM
-
-XGBoost / LightGBM / CatBoost → top performance
-
-TensorFlow / PyTorch → deep learning (optional)
-
-Optuna / GridSearchCV → hyperparameter tuning
-
-🔹 5) Model Evaluation Tools
-
-Scikit-learn metrics (accuracy, recall, ROC–AUC)
-
-Yellowbrick → model visual diagnostics
-
-SHAP / LIME → model interpretability (feature importance)
-
-🔹 6) Deployment Tools
-
-বাস্তবে model serve করতে যা লাগে:
-
-Option A: API Deployment
-
-FastAPI / Flask
-
-Docker
-
-Uvicorn / Gunicorn
-
-Option B: Cloud Deployment
-
-AWS SageMaker
-
-Google Vertex AI
-
-Azure ML Studio
-
-Option C: Lightweight Deployment
-
-Streamlit / Gradio → দারুণ demo interface
-
-🔹 7) Pipeline Automation Tools
-
-Full data → model → prediction automation করতে:
-
-Airflow → automated ML pipeline
-
-MLflow → tracking + model registry
-
-DVC → dataset versioning
-
-🔹 8) Dashboard & Reporting Tools
-
-Churn prediction results visualize করতে:
-
-Power BI
-
-Tableau
-
-Looker Studio
-
-Streamlit dashboard
-
-Apache Superset
-
-🔹 9) Real-time Engagement / CRM Integration
-
-Prediction → action এটা automate করতে:
-
-HubSpot CRM
-
-Zoho CRM
-
-Salesforce Marketing Cloud
-
-Customer.io / Mailchimp → email triggers
-
-Twilio → SMS notifications
-
-
-Core Tools:
-
-Python, Pandas, Scikit-learn, SQL, Jupyter, Matplotlib
-
-Advanced Tools:
-
-XGBoost, MLflow, Docker, FastAPI
-
-Data Tools:
-
-MySQL/PostgreSQL, Firebase, AWS S3
-
-Dashboard Tools:
-
-Power BI / Streamlit

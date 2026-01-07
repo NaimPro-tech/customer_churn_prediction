@@ -13,12 +13,10 @@ data = joblib.load(model_path)
 
 model = data['model']
 features = data['features']  # list of 39 feature names
-ohe = data.get('ohe', None)
+# ohe = data.get('ohe', None)
 label_encoders = data.get('label_encoders', {})
 threshold = data.get('threshold') 
-print("threshold:", threshold)
 st.title("Customer Churn Prediction")
-st.write("Fill in the customer details below and hit Predict")
 
 # -----------------------------
 # USER INPUTS
@@ -70,30 +68,31 @@ if predict_button:
 
     # 2. Convert to DataFrame
     df_input = pd.DataFrame([input_dict])
-
+  
     # 3. Apply label encoders
     for col, le in label_encoders.items():
         if col in df_input.columns:
             df_input[col] = le.transform(df_input[col])
 
     # 4. Apply OneHotEncoder if exists
-    if ohe:
-        try:
-            df_ohe = pd.DataFrame(ohe.transform(df_input[ohe.feature_names_in_]).toarray(),
-                                  columns=ohe.get_feature_names_out())
-            df_input = df_ohe
-        except:
-            # In case some expected columns missing, fill zeros
-            df_input = pd.DataFrame(0, index=np.arange(1), columns=ohe.get_feature_names_out())
-
+    # if ohe:
+    #     try:
+    #         df_ohe = pd.DataFrame(ohe.transform(df_input[ohe.feature_names_in_]).toarray(),
+    #                               columns=ohe.get_feature_names_out())
+    #         df_input = df_ohe
+          
+    #     except:
+    #         # In case some expected columns missing, fill zeros
+    #         df_input = pd.DataFrame(0, index=np.arange(1), columns=ohe.get_feature_names_out())
+   
     # 5. Reindex to match model features
-    df_input = df_input.reindex(columns=features, fill_value=0)
 
+    df_input = df_input.reindex(columns=features,fill_value=0)        
     # 6. Predict probability and class
     pred_prob = model.predict_proba(df_input)[:, 1]  # probability of churn
     pred_class = (pred_prob >= threshold).astype(int)[0]
-    predicted_label = "Churn" if pred_class == 1 else "Not Churn"
-
+    predicted_label = "Churn" if pred_class == 1 else "Not Churn"   
+    print(pred_prob, predicted_label, pred_class) 
     st.balloons()
     st.subheader("Prediction Result")
     st.write(f"Predicted Customer Status: **{predicted_label}**")

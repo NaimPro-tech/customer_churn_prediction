@@ -91,8 +91,7 @@ if predict_button:
     # 6. Predict probability and class
     pred_prob = model.predict_proba(df_input)[:, 1]  # probability of churn
     pred_class = (pred_prob >= threshold).astype(int)[0]
-    predicted_label = "Churn" if pred_class == 1 else "Not Churn"   
-    print(pred_prob, predicted_label, pred_class) 
+    predicted_label = "Churn" if pred_class == 1 else "Not Churn"    
     st.balloons()
     st.subheader("Prediction Result")
     st.write(f"Predicted Customer Status: **{predicted_label}**")

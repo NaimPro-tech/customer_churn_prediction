@@ -60,6 +60,13 @@ if internet_service == "Fiber optic" or internet_service == "DSL":
     tech_support = st.selectbox("Tech Support", options=["Yes", "No", "No internet service"])
     streaming_tv = st.selectbox("Streaming TV", options=["Yes", "No", "No internet service"])
     streaming_movies = st.selectbox("Streaming Movies", options=["Yes", "No", "No internet service"])
+else:
+    online_security = "No internet service"
+    online_backup = "No internet service"
+    device_protection = "No internet service"
+    tech_support = "No internet service"
+    streaming_tv = "No internet service"
+    streaming_movies =   "No internet service"  
 
 
 

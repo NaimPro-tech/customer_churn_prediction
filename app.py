@@ -70,7 +70,8 @@ predict_button = st.button("Predict")
 
 if predict_button:
     # 1. Prepare input dict
-    input_dict = {   
+    input_dict = {
+        "CustomerID": customer_id,
         "SeniorCitizen": 1 if seniorCitizen == "Yes" else 0,    
         "Gender": gender,
         "Tenure": tenure,

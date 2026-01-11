@@ -14,15 +14,16 @@ model_path = os.path.join(BASE_DIR, 'churn_xgb_model.joblib')
 data = joblib.load(model_path)
 
 model = data['model']
-features = data['features']  # list of 39 feature names
-# ohe = data.get('ohe', None)
-label_encoders = data.get('label_encoders', {})
+features = data['features']
+ohe = data["ohe"]
+label_encoders = data["label_encoders"]
+mul_cols = data["mul_category"]
+bin_cols = data["bin_category"]
 threshold = data.get('threshold') 
 st.title("Customer Churn Prediction")
 
-# -----------------------------
-# USER INPUTS
-# -----------------------------
+
+#USER INPUTS
 
 st.header("Basic Information")
 customer_id = st.text_input("Enter Customer ID", placeholder="WKSL-2233", help="Format: 4 capital letters+dash+4 digits, e.g., ABCD-1234")
@@ -63,9 +64,9 @@ else:
     tech_support = "No internet service"
     streaming_tv = "No internet service"
     streaming_movies =   "No internet service" 
-# -----------------------------
-# Predict Button
-# -----------------------------
+
+#Predict Button
+
 predict_button = st.button("Predict")
 
 if predict_button:
@@ -93,34 +94,39 @@ if predict_button:
 
     # 2. Convert to DataFrame
     df_input = pd.DataFrame([input_dict])
-
-    # 3. Apply label encoders
-    for col, le in label_encoders.items():
+    
+    #label encoding
+    for col in bin_cols:
         if col in df_input.columns:
-            df_input[col] = le.transform(df_input[col])
+            df_input[col] = label_encoders[col].transform(df_input[col])
 
-    # 4. Apply OneHotEncoder if exists
-    # if ohe:
-    #     try:
-    #         df_ohe = pd.DataFrame(ohe.transform(df_input[ohe.feature_names_in_]).toarray(),
-    #                               columns=ohe.get_feature_names_out())
-    #         df_input = df_ohe
-    #     except:
-    #         # In case some expected columns missing, fill zeros
-    #         df_input = pd.DataFrame(0, index=np.arange(1), columns=ohe.get_feature_names_out())
 
-    # 5. Reindex to match model features
-    df_input = df_input.reindex(columns=features, fill_value=0)
+    #one hot encoding
+    ohe_encoded = ohe.transform(df_input[mul_cols])
+    ohe_df = pd.DataFrame(
+        ohe_encoded,
+        columns=ohe.get_feature_names_out(mul_cols)
+    )
 
-    # 6. Predict probability and class
-    pred_prob = model.predict_proba(df_input)[:, 1]  # probability of churn
-    pred_class = (pred_prob >= threshold).astype(int)[0]
-    predicted_label = "Churn" if pred_class == 1 else "Not Churn"
+    #drop multi categorical raw columns
+    df_input = df_input.drop(columns=mul_cols)
+
+    #merge encoded columns
+    df_input = pd.concat([df_input.reset_index(drop=True), ohe_df.reset_index(drop=True)], axis=1)
+
+
+    df_input =df_input.reindex(columns=features, fill_value=0)
+
+    pred_prob = model.predict_proba(df_input)[:,1]
+    pred_class = (pred_prob>=threshold).astype(int)
+
+    predict_label = "Churn" if pred_class==1 else "Not Churn"
+
+    # st.write("Input DataFrame for prediction:")
+    # st.dataframe(df_input)
+    # st.write("Predicted Probability:", pred_prob)
 
     st.balloons()
     st.subheader("Prediction Result")
-    st.write(f"Predicted Customer Status: **{predicted_label}**")
+    st.write(f"Predicted Customer Status: **{predict_label}**")
     st.write(f"Churn Probability: {pred_prob[0]*100:.2f}%")
-else:
-    st.write("Click on the Predict button to get the prediction.")
-

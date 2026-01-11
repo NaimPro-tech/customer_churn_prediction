@@ -9,6 +9,9 @@ from xgboost import XGBClassifier
 # Load Dataset
 df = pd.read_csv("Telco_Cusomer_Churn.csv")
 
+#copy raw dataset
+df_raw = df.copy()
+
 # Drop redundant column
 df = df.drop(columns="PhoneService")
 
@@ -19,19 +22,19 @@ df = df.dropna(subset=["TotalCharges"])
 # Encoding
 cat_cols = df.select_dtypes(include="object").columns
 
-mul_cat = [
+mul_cols = [
     col for col in cat_cols
     if df[col].nunique() > 2 and col not in ["CustomerID", "TotalCharges"]
 ]
 
 # One-hot encoding
 ohe = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
-encoded = ohe.fit_transform(df[mul_cat])
-encoded_df = pd.DataFrame(encoded, columns=ohe.get_feature_names_out(mul_cat))
+encoded = ohe.fit_transform(df[mul_cols])
+encoded_df = pd.DataFrame(encoded, columns=ohe.get_feature_names_out(mul_cols))
 
 df = df.reset_index(drop=True)
 encoded_df = encoded_df.reset_index(drop=True)
-df = pd.concat([df.drop(columns=mul_cat), encoded_df], axis=1)
+df = pd.concat([df.drop(columns=mul_cols), encoded_df], axis=1)
 
 # Binary encoding
 bin_cols = [col for col in cat_cols if col in df.columns and df[col].nunique() == 2]
@@ -43,8 +46,10 @@ for col in bin_cols:
     df[col] = le.fit_transform(df[col])
     label_encoders[col] = le  # Save each column's encoder separately
 
+
+#preprocessed df with label encoders and one hot encoders
 # Feature and Target
-X = df.drop(columns=["CustomerID", "Churn"])
+X = df.drop(columns=["CustomerID", "Churn"]) 
 y = df["Churn"]
 
 # Train-test split
@@ -72,7 +77,11 @@ model_artifact = {
     "ohe": ohe,
     "label_encoders": label_encoders,
     "threshold": 0.4,
-    "features": X.columns.tolist()
+    "features": X.columns.tolist(),
+    "mul_category": mul_cols,
+    "bin_category": bin_cols,
+    "num_cols": X.select_dtypes(include="number").columns.tolist(),
+    "raw_columns": df_raw.columns.tolist()
 }
 
 joblib.dump(model_artifact, "churn_xgb_model.joblib")
